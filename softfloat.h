@@ -9,8 +9,8 @@ typedef struct SoftFloat {
     int32_t  exp;
 } SoftFloat;
 
-static const FLOAT_0 = {0, -126};
-static const FLOAT_1 = {0,    0};
+static const SoftFloat FLOAT_0 = {0, -126};
+static const SoftFloat FLOAT_1 = {0,    0};
 
 static SoftFloat normalize_sf(SoftFloat sf) {
     while( sf.mant >= 0x1000000 ) {
