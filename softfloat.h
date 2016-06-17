@@ -8,7 +8,7 @@
 
 typedef struct SoftFloat {
     int32_t sign;
-    int32_t mant;
+    uint32_t mant;
     int32_t  exp;
 } SoftFloat;
 
@@ -16,7 +16,7 @@ static const SoftFloat FLOAT_0 = {0, -126};
 static const SoftFloat FLOAT_1 = {0,    0};
 
 static SoftFloat normalize_sf(SoftFloat sf) {
-    while( sf.mant >= 0x1000000 ) {
+    while( sf.mant >= 0x1000000UL ) {
         sf.exp++;
         sf.mant >>= 1;
     }
@@ -26,13 +26,15 @@ static SoftFloat normalize_sf(SoftFloat sf) {
 
 static SoftFloat int2sf(int32_t n) {
     int sign = 0;
-    int32_t exp, mant;
+    int32_t exp;
+    uint32_t mant;
     SoftFloat sf;
 
-    mant = n << 23; //Keep mant in a 64-bit integer may be ?
     if (n < 0) {
         sign = 1;
+        n *= -1;
     }
+    mant = n << 23; //Keep mant in a 64-bit integer may be ?
     return normalize_sf((SoftFloat) {sign, mant, 0});
 }
 
