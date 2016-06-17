@@ -24,7 +24,7 @@ static SoftFloat normalize_sf(SoftFloat sf) {
     return sf;
 }
 
-static SoftFloat int2sf(int32_t n) {
+static SoftFloat int2sf(int32_t n, int e) {
     int sign = 0;
     int32_t exp;
     uint32_t mant;
@@ -35,7 +35,7 @@ static SoftFloat int2sf(int32_t n) {
         n *= -1;
     }
     mant = n << 23; //Keep mant in a 64-bit integer may be ?
-    return normalize_sf((SoftFloat) {sign, mant, 0});
+    return normalize_sf((SoftFloat) {sign, mant, 0 + e});
 }
 
 static int sf2int(SoftFloat a) {
