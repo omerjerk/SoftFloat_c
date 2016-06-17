@@ -44,7 +44,7 @@ static SoftFloat div_sf(SoftFloat a, SoftFloat b) {
     a = normalize_sf(a);
     b = normalize_sf(b);
     sign = a.sign ^ b.sign;
-    mant = (uint32_t) (((uint64_t) (a.mant | 0x00800000UL)) << (MANT_BITS + 1)) / (b.mant| 0x00800000UL);
+    mant = ((((uint64_t) (a.mant | 0x00800000UL)) << MANT_BITS) / (b.mant| 0x00800000UL));
     exp = a.exp - b.exp;
     return normalize_sf((SoftFloat) {sign, mant, exp});
 }
@@ -54,7 +54,7 @@ static SoftFloat mul_sf(SoftFloat a, SoftFloat b) {
     a = normalize_sf(a);
     b = normalize_sf(b);
     sign = a.sign ^ b.sign;
-    mant = (uint32_t)(((uint64_t)(a.mant|0x00800000UL) * (uint64_t)(b.mant|0x00800000UL))>>MANT_BITS);
+    mant = (uint32_t) (((uint64_t)(a.mant|0x00800000UL) * (uint64_t)(b.mant|0x00800000UL))>>MANT_BITS);
     exp = a.exp + b.exp;
     return normalize_sf((SoftFloat) {sign, mant, exp});
 }
