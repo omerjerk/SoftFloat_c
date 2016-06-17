@@ -38,6 +38,11 @@ static SoftFloat int2sf(int32_t n) {
     return normalize_sf((SoftFloat) {sign, mant, 0});
 }
 
+static int sf2int(SoftFloat a) {
+    if(a.exp >= 0) return a.mant <<  a.exp ;
+    else           return a.mant >>(-a.exp);
+}
+
 static SoftFloat div_sf(SoftFloat a, SoftFloat b) {
     //Or should we rather convert it into a normal float and perform the division ?
     int32_t mant, exp, sign;
