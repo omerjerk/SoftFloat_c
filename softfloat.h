@@ -1,6 +1,8 @@
 #ifndef SOFTFLOAT_H
 #define SOFTFLOAT_H
 
+#include <stdint.h>
+
 #define EXP_BIAS -127
 
 typedef struct SoftFloat {
@@ -23,8 +25,10 @@ static SoftFloat normalize_sf(SoftFloat sf) {
 
 static SoftFloat int2sf(int32_t n) {
     int sign = 0;
-    int32_t exp, mant = n;
+    int32_t exp, mant;
     SoftFloat sf;
+
+    mant = n << 23; //Keep mant in a 64-bit integer may be ?
     if (n < 0) {
         sign = 1;
     }
@@ -32,23 +36,24 @@ static SoftFloat int2sf(int32_t n) {
 }
 
 static SoftFloat div_sf(SoftFloat a, SoftFloat b) {
+    //Or should we rather convert it into a normal float and perform the division ?
     int32_t mant, exp, sign;
-    a = av_normalize_sf(a) | 0x00800000UL;
-    b = av_normalize_sf(b) | 0x00800000UL;
+    a = normalize_sf(a);
+    b = normalize_sf(b);
     sign = a.sign ^ b.sign;
-    mant = a.mant / b.mant;
+    mant = (a.mant | 0x00800000UL)/ (b.mant| 0x00800000UL);
     exp = a.exp - b.exp;
-    return av_normalize_sf((SoftFloat) {sign, mant, exp});
+    return normalize_sf((SoftFloat) {sign, mant, exp});
 }
 
 static SoftFloat mul_sf(SoftFloat a, SoftFloat b) {
     int32_t sign, mant, exp;
-    a = av_normalize_sf(a) | 0x00800000UL;
-    b = av_normalize_sf(b) | 0x00800000UL;
+    a = normalize_sf(a);
+    b = normalize_sf(b);
     sign = a.sign ^ b.sign;
-    mant = (uint32_t)((uint64_t)a.mant * (uint64_t)b.mant);
+    mant = (uint32_t)((uint64_t)(a.mant|0x00800000UL) * (uint64_t)(b.mant|0x00800000UL));
     exp = a.exp + b.exp;
-    return av_normalize_sf((SoftFloat) {sign, mant, exp});
+    return normalize_sf((SoftFloat) {sign, mant, exp});
 }
 
 static int eq_sf(SoftFloat a, SoftFloat b) {
