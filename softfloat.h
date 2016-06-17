@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #define EXP_BIAS -127
+#define MANT_BITS 23
 
 typedef struct SoftFloat {
     int32_t sign;
@@ -41,7 +42,7 @@ static SoftFloat div_sf(SoftFloat a, SoftFloat b) {
     a = normalize_sf(a);
     b = normalize_sf(b);
     sign = a.sign ^ b.sign;
-    mant = (a.mant | 0x00800000UL)/ (b.mant| 0x00800000UL);
+    mant = (((int64_t) (a.mant | 0x00800000UL)) << (MANT_BITS + 1)) / (b.mant| 0x00800000UL);
     exp = a.exp - b.exp;
     return normalize_sf((SoftFloat) {sign, mant, exp});
 }
