@@ -31,7 +31,7 @@ static SoftFloat int2sf(int64_t n, int e) {
         sign = 1;
         n *= -1;
     }
-    return normalize_sf((SoftFloat) {sign, n << 23, 0 + e});
+    return normalize_sf((SoftFloat) {sign, n << MANT_BITS, 0 + e});
 }
 
 static SoftFloat bits2sf(uint32_t n) {
