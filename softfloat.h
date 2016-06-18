@@ -24,16 +24,14 @@ static SoftFloat normalize_sf(SoftFloat sf) {
     return sf;
 }
 
-static SoftFloat int2sf(int32_t n, int e) {
+static SoftFloat int2sf(int64_t n, int e) {
     int sign = 0;
-    uint32_t mant;
 
     if (n < 0) {
         sign = 1;
         n *= -1;
     }
-    mant = n << 23; //Keep mant in a 64-bit integer may be ?
-    return normalize_sf((SoftFloat) {sign, mant, 0 + e});
+    return normalize_sf((SoftFloat) {sign, n << 23, 0 + e});
 }
 
 static SoftFloat bits2sf(uint32_t n) {
