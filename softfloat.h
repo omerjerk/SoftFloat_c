@@ -44,7 +44,6 @@ static int sf2int(SoftFloat a) {
 }
 
 static SoftFloat div_sf(SoftFloat a, SoftFloat b) {
-    //Or should we rather convert it into a normal float and perform the division ?
     int32_t mant, exp, sign;
     a = normalize_sf(a);
     b = normalize_sf(b);
